@@ -70,24 +70,24 @@ set_io -nowarn BREAK_LEDS[3]  23
 set_io -nowarn BREAK_LEDS[4]  21
 
 # 7 segment PMOD (Assume connection on PMOD 1A)
-set_io -nowarn 7SEG_AA  4
-set_io -nowarn 7SEG_AE  2
-set_io -nowarn 7SEG_AB 47
-set_io -nowarn 7SEG_AF 45
-set_io -nowarn 7SEG_AC  3
-set_io -nowarn 7SEG_AG 48
-set_io -nowarn 7SEG_AD 46
-set_io -nowarn 7SEG_CA 44
+set_io -nowarn SEV_SEG_AA  4
+set_io -nowarn SEV_SEG_AE  2
+set_io -nowarn SEV_SEG_AB 47
+set_io -nowarn SEV_SEG_AF 45
+set_io -nowarn SEV_SEG_AC  3
+set_io -nowarn SEV_SEG_AG 48
+set_io -nowarn SEV_SEG_AD 46
+set_io -nowarn SEV_SEG_CA 44
 
-set_io -nowarn 7SEGMENT[0]  4
-set_io -nowarn 7SEGMENT[1]  2
-set_io -nowarn 7SEGMENT[2] 47
-set_io -nowarn 7SEGMENT[3] 45
-set_io -nowarn 7SEGMENT[4] 3
-set_io -nowarn 7SEGMENT[5] 48
-set_io -nowarn 7SEGMENT[6] 46
+set_io -nowarn SEV_SEGMENT[0]  4
+set_io -nowarn SEV_SEGMENT[1]  2
+set_io -nowarn SEV_SEGMENT[2] 47
+set_io -nowarn SEV_SEGMENT[3] 45
+set_io -nowarn SEV_SEGMENT[4]  3
+set_io -nowarn SEV_SEGMENT[5] 48
+set_io -nowarn SEV_SEGMENT[6] 46
 
-set_io -nowarn 7SEG_CATHODE 44
+set_io -nowarn SEV_SEG_CATHODE 44
 
 # DIP-switch PMOD (Assume connection on PMOD 1B)
 set_io -nowarn DIP_1 43

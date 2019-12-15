@@ -1,5 +1,31 @@
 # Generic "include" modules
 
+### bcd.v
+
+This module converts a nibble (4 bits) to seven segments.
+
+Parameters:
+
+* `i_nibble`: Input, nibble to convert
+* `o_segments`: Output, segments
+
+Usage:
+
+```
+module top(SEV_SEGMENT);
+    ...
+    reg [6:0] segments;
+    reg [7:0] counter;
+    ...
+    assign SEV_SEGMENT = ~segments; // active-low
+    ...
+    bcd digit(
+        .i_nibble(counter[3:0])
+        .o_segments(segments)
+    );
+    ...
+```
+
 ### button_counter.v
 
 This module allows to increase, decrease and reset a counter. By default, it supports a 4-bit counter
@@ -16,7 +42,7 @@ Parameters:
 Usage:
 
 ```
-module top(CLOCK, BUTTON_INC, BUTTON_DEC, BUTTON_RESET, ...)
+module top(CLOCK, BUTTON_INC, BUTTON_DEC, BUTTON_RESET, ...);
     ...
     reg [3:0] counter;
     ...
@@ -32,7 +58,7 @@ module top(CLOCK, BUTTON_INC, BUTTON_DEC, BUTTON_RESET, ...)
 With `WIDTH` parameter:
 
 ```
-module top(CLOCK, BUTTON_INC, BUTTON_DEC, BUTTON_RESET, ...)
+module top(CLOCK, BUTTON_INC, BUTTON_DEC, BUTTON_RESET, ...);
     ...
     reg [7:0] counter;
     ...
@@ -64,7 +90,7 @@ Parameters:
 Usage:
 
 ```
-module top(CLOCK, BUTTON, ...)
+module top(CLOCK, BUTTON, ...);
     ...
     wire clean_button;
     ...
@@ -79,7 +105,7 @@ module top(CLOCK, BUTTON, ...)
 With `DELAY` parameter:
 
 ```
-module top(CLOCK, BUTTON, ...)
+module top(CLOCK, BUTTON, ...);
     ...
     wire clean_button;
     ...
@@ -108,7 +134,7 @@ Parameters:
 Usage:
 
 ```
-module top(CLOCK, ...)
+module top(CLOCK, ...);
     ...
     wire slow_clock;
     ...
@@ -122,7 +148,7 @@ module top(CLOCK, ...)
 The module can also be parameterized to control the scale:
 
 ```
-module top(CLOCK, ...)
+module top(CLOCK, ...);
     ...
     wire slow_clock;
     ...
