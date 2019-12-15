@@ -1,43 +1,48 @@
 # Generic "include" modules
 
-### clock_divider.v
+### button_counter.v
 
-This module scales down a given clock.
-
-It works by incrementing a register with a width of `SCALE` bits. Every time the counter overflows,
-the output clock is toggled. The default `SCALE` is set to `20`.
+This module allows to increase, decrease and reset a counter. By default, it supports a 4-bit counter
+but this can be configured using the `WIDTH` parameter.
 
 Parameters:
 
-* `i_clock`: Input, the input clock
-* `o_clock`: Output, the slower output clock
+* `i_clock`: Input, input clock
+* `i_button_inc`: Input, button to use for incrementing
+* `i_button_dec`: Input, button to use for decrementing
+* `i_button_reset`: Input, button to reset the counter
+* `o_counter`: Output, the counter
 
 Usage:
 
 ```
-module top(CLOCK, ...)
+module top(CLOCK, BUTTON_INC, BUTTON_DEC, BUTTON_RESET, ...)
     ...
-    wire slow_clock;
+    reg [3:0] counter;
     ...
-    clock_divider divider(
+    button_counter b_counter(
         .i_clock(CLOCK),
-        .o_clock(slow_clock)
+        .i_button_inc(BUTTON_INC),
+        ...
+        .o_counter(counter)
     );
     ...
 ```
 
-The module can also be parameterized to control the scale:
+With `WIDTH` parameter:
 
 ```
-module top(CLOCK, ...)
+module top(CLOCK, BUTTON_INC, BUTTON_DEC, BUTTON_RESET, ...)
     ...
-    wire slow_clock;
+    reg [7:0] counter;
     ...
-    clock_divider #(
-        .SCALE(12)
-    ) divider(
+    button_counter #(
+        .WIDTH(8)
+    ) b_counter(
         .i_clock(CLOCK),
-        .o_clock(slow_clock)
+        .i_button_inc(BUTTON_INC),
+        ...
+        .o_counter(counter)
     );
     ...
 ```
@@ -84,6 +89,48 @@ module top(CLOCK, BUTTON, ...)
         .i_clock(CLOCK),
         .i_button(BUTTON),
         .o_state(clean_button)
+    );
+    ...
+```
+
+### clock_divider.v
+
+This module scales down a given clock.
+
+It works by incrementing a register with a width of `SCALE` bits. Every time the counter overflows,
+the output clock is toggled. The default `SCALE` is set to `20`.
+
+Parameters:
+
+* `i_clock`: Input, the input clock
+* `o_clock`: Output, the slower output clock
+
+Usage:
+
+```
+module top(CLOCK, ...)
+    ...
+    wire slow_clock;
+    ...
+    clock_divider divider(
+        .i_clock(CLOCK),
+        .o_clock(slow_clock)
+    );
+    ...
+```
+
+The module can also be parameterized to control the scale:
+
+```
+module top(CLOCK, ...)
+    ...
+    wire slow_clock;
+    ...
+    clock_divider #(
+        .SCALE(12)
+    ) divider(
+        .i_clock(CLOCK),
+        .o_clock(slow_clock)
     );
     ...
 ```
