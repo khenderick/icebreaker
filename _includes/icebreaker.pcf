@@ -1,0 +1,109 @@
+# 12 MHz clock
+set_io -nowarn CLOCK 35
+
+# RS232
+set_io -nowarn RX 6
+set_io -nowarn TX 9
+
+# LEDs and Button
+set_io -nowarn NATIVE_BUTTON    10
+set_io -nowarn NATIVE_LED_RED   11
+set_io -nowarn NATIVE_LED_GREEN 37
+
+# RGB LED Driver
+set_io -nowarn RGB_LED_RED   39
+set_io -nowarn RGB_LED_GREEN 40
+set_io -nowarn RGB_LED_BLUE  41
+
+# SPI Flash
+set_io -nowarn FLASH_SCK 15
+set_io -nowarn FLASH_SSB 16
+set_io -nowarn FLASH_IO0 14
+set_io -nowarn FLASH_IO1 17
+set_io -nowarn FLASH_IO2 12
+set_io -nowarn FLASH_IO3 13
+
+# PMOD 1A
+set_io -nowarn PMOD_1A_1   4
+set_io -nowarn PMOD_1A_2   2
+set_io -nowarn PMOD_1A_3  47
+set_io -nowarn PMOD_1A_4  45
+set_io -nowarn PMOD_1A_7   3
+set_io -nowarn PMOD_1A_8  48
+set_io -nowarn PMOD_1A_9  46
+set_io -nowarn PMOD_1A_10 44
+
+# PMOD 1B
+set_io -nowarn PMOD_1B_1  43
+set_io -nowarn PMOD_1B_2  38
+set_io -nowarn PMOD_1B_3  34
+set_io -nowarn PMOD_1B_4  31
+set_io -nowarn PMOD_1B_7  42
+set_io -nowarn PMOD_1B_8  36
+set_io -nowarn PMOD_1B_9  32
+set_io -nowarn PMOD_1B_10 28
+
+# PMOD 2
+set_io -nowarn PMOD_2_1  27
+set_io -nowarn PMOD_2_2  25
+set_io -nowarn PMOD_2_3  21
+set_io -nowarn PMOD_2_4  19
+set_io -nowarn PMOD_2_7  26
+set_io -nowarn PMOD_2_8  23
+set_io -nowarn PMOD_2_9  20
+set_io -nowarn PMOD_2_10 18
+
+# Break away PMOD (Assume connection on PMOD 2)
+set_io -nowarn BREAK_L1       26
+set_io -nowarn BREAK_L2       27
+set_io -nowarn BREAK_L3       25
+set_io -nowarn BREAK_L4       23
+set_io -nowarn BREAK_L5       21
+set_io -nowarn BREAK_BUTTON_1 20
+set_io -nowarn BREAK_BUTTON_2 19
+set_io -nowarn BREAK_BUTTON_3 18
+
+set_io -nowarn BREAK_LEDS[0]  26
+set_io -nowarn BREAK_LEDS[1]  27
+set_io -nowarn BREAK_LEDS[2]  25
+set_io -nowarn BREAK_LEDS[3]  23
+set_io -nowarn BREAK_LEDS[4]  21
+
+# 7 segment PMOD (Assume connection on PMOD 1A)
+set_io -nowarn 7SEG_AA  4
+set_io -nowarn 7SEG_AE  2
+set_io -nowarn 7SEG_AB 47
+set_io -nowarn 7SEG_AF 45
+set_io -nowarn 7SEG_AC  3
+set_io -nowarn 7SEG_AG 48
+set_io -nowarn 7SEG_AD 46
+set_io -nowarn 7SEG_CA 44
+
+set_io -nowarn 7SEGMENT[0]  4
+set_io -nowarn 7SEGMENT[1]  2
+set_io -nowarn 7SEGMENT[2] 47
+set_io -nowarn 7SEGMENT[3] 45
+set_io -nowarn 7SEGMENT[4] 3
+set_io -nowarn 7SEGMENT[5] 48
+set_io -nowarn 7SEGMENT[6] 46
+
+set_io -nowarn 7SEG_CATHODE 44
+
+# DIP-switch PMOD (Assume connection on PMOD 1B)
+set_io -nowarn DIP_1 43
+set_io -nowarn DIP_2 38
+set_io -nowarn DIP_3 34
+set_io -nowarn DIP_4 31
+set_io -nowarn DIP_5 42
+set_io -nowarn DIP_6 36
+set_io -nowarn DIP_7 32
+set_io -nowarn DIP_8 28
+
+set_io -nowarn DIPS[0] 43
+set_io -nowarn DIPS[1] 38
+set_io -nowarn DIPS[2] 34
+set_io -nowarn DIPS[3] 31
+set_io -nowarn DIPS[4] 42
+set_io -nowarn DIPS[5] 36
+set_io -nowarn DIPS[6] 32
+set_io -nowarn DIPS[7] 28
