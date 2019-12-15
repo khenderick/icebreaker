@@ -1,5 +1,5 @@
 PROJ = seven_segment
-ADD_SRC = ../_includes/clock_divider.v ../_includes/button_debouncer.v ../_includes/button_counter.v ../_includes/bcd.v
+ADD_SRC = ../_includes/clock_divider.v ../_includes/button_debouncer.v ../_includes/button_counter.v ../_includes/bcd.v ../_includes/seven_segments.v
 
 PIN_DEF = ../_includes/icebreaker.pcf
 DEVICE = up5k

@@ -8,7 +8,7 @@
 // only one module `top` at any given time.
 
 module top(CLOCK, BREAK_BUTTON_1, BREAK_BUTTON_2, BREAK_BUTTON_3, SEV_SEGMENT, SEV_SEG_CATHODE);
-    // Uses the seven segment displays to display an 8-bit counter. Control the counter
+    // Uses the seven segment displays to display an 8-bit counter in HEX. Control the counter
     // with the buttons; B1 increments, B2 resets and B3 decrements the counter
 
     input CLOCK;
@@ -19,11 +19,8 @@ module top(CLOCK, BREAK_BUTTON_1, BREAK_BUTTON_2, BREAK_BUTTON_3, SEV_SEGMENT, S
     output SEV_SEG_CATHODE;
 
     reg [7:0] counter;
-    reg cathode = 1;
     reg [6:0] digit_0_segments;
-
-    assign SEV_SEGMENT = ~digit_0_segments;
-    assign SEV_SEG_CATHODE = cathode;
+    reg [6:0] digit_1_segments;
 
     button_counter #(
         .WIDTH(8)
@@ -38,5 +35,18 @@ module top(CLOCK, BREAK_BUTTON_1, BREAK_BUTTON_2, BREAK_BUTTON_3, SEV_SEGMENT, S
     bcd digit_0(
         .i_nibble(counter[3:0]),
         .o_segments(digit_0_segments)
+    );
+
+    bcd digit_1(
+        .i_nibble(counter[7:4]),
+        .o_segments(digit_1_segments)
+    );
+
+    seven_segments display(
+        .i_clock(CLOCK),
+        .i_segments_digit_0(digit_0_segments),
+        .i_segments_digit_1(digit_1_segments),
+        .o_sev_segments(SEV_SEGMENT),
+        .o_sev_seg_cathode(SEV_SEG_CATHODE)
     );
 endmodule
