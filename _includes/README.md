@@ -9,8 +9,8 @@ the output clock is toggled. The default `SCALE` is set to `20`.
 
 Parameters:
 
-* *i_clock*: Input, the input clock
-* *o_clock*: Output, the slower output clock
+* `i_clock`: Input, the input clock
+* `o_clock`: Output, the slower output clock
 
 Usage:
 
@@ -90,3 +90,5 @@ module top(CLOCK, BUTTON, ...)
 
 ### icebreaker.pcf
 
+Pin definitions for the iCEBreaker FPGA. Can be found in a lot of places, but I had to
+make (adapt) my own with longer names. I don't like 3-character cryptic names.
