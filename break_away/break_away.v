@@ -11,8 +11,8 @@ module top(CLOCK, BREAK_BUTTON_1, BREAK_BUTTON_2, BREAK_BUTTON_3, BREAK_LEDS);
 
     input CLOCK;
     input BREAK_BUTTON_1;
-	input BREAK_BUTTON_2;
-	input BREAK_BUTTON_3;
+    input BREAK_BUTTON_2;
+    input BREAK_BUTTON_3;
     output [4:0] BREAK_LEDS;
 
     wire button_event;
@@ -88,10 +88,10 @@ endmodule
 module top_3(BREAK_BUTTON_1, BREAK_BUTTON_2, BREAK_BUTTON_3, BREAK_LEDS);
     // Link the 3 horizonal leds to the buttons
 
-	input BREAK_BUTTON_1;
-	input BREAK_BUTTON_2;
-	input BREAK_BUTTON_3;
-	output [4:0] BREAK_LEDS;
+    input BREAK_BUTTON_1;
+    input BREAK_BUTTON_2;
+    input BREAK_BUTTON_3;
+    output [4:0] BREAK_LEDS;
 
     assign BREAK_LEDS[0] = BREAK_BUTTON_2;
     assign BREAK_LEDS[1] = 0;
