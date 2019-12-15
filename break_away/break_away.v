@@ -10,7 +10,7 @@ module top(CLOCK, BREAK_BUTTON_1, BREAK_BUTTON_2, BREAK_BUTTON_3, BREAK_LEDS);
     // with the buttons; B1 increments, B2 resets and B3 decrements the counter
 
     input CLOCK;
-	input BREAK_BUTTON_1;
+    input BREAK_BUTTON_1;
 	input BREAK_BUTTON_2;
 	input BREAK_BUTTON_3;
     output [4:0] BREAK_LEDS;
