@@ -1,4 +1,7 @@
-# Code to play around with the break-away section of the board.
+# The break-away PMOD
+
+Code to play around with the break-away PMOD. I broke it away and soldered on the 
+headers, but that's because I like to solder.
 
 ### Led and button overview
 
