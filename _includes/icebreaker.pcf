@@ -6,9 +6,9 @@ set_io -nowarn RX 6
 set_io -nowarn TX 9
 
 # LEDs and Button
-set_io -nowarn NATIVE_BUTTON    10
-set_io -nowarn NATIVE_LED_RED   11
-set_io -nowarn NATIVE_LED_GREEN 37
+set_io -nowarn NATIVE_BUTTON_INV    10
+set_io -nowarn NATIVE_LED_RED_INV   11
+set_io -nowarn NATIVE_LED_GREEN_INV 37
 
 # RGB LED Driver
 set_io -nowarn RGB_LED_RED   39
@@ -107,3 +107,39 @@ set_io -nowarn DIPS[4] 42
 set_io -nowarn DIPS[5] 36
 set_io -nowarn DIPS[6] 32
 set_io -nowarn DIPS[7] 28
+
+# Led panel PMOD (Assume connection on PMOD 1A & 1B)
+set_io -nowarn LP_R0  4
+set_io -nowarn LP_R1  3
+set_io -nowarn LP_G0  2
+set_io -nowarn LP_G1 48
+set_io -nowarn LP_B0 47
+set_io -nowarn LP_B1 46
+
+set_io -nowarn LP_A0 43
+set_io -nowarn LP_A1 38
+set_io -nowarn LP_A2 34
+set_io -nowarn LP_A3 31
+set_io -nowarn LP_A4 28
+
+set_io -nowarn LP_CLOCK 32
+set_io -nowarn LP_LATCH 36
+set_io -nowarn LP_BLANK 42
+
+set_io -nowarn LP_RGB_0[0]  4
+set_io -nowarn LP_RGB_0[1]  2
+set_io -nowarn LP_RGB_0[2] 47
+
+set_io -nowarn LP_RGB_1[0]  3
+set_io -nowarn LP_RGB_1[1] 48
+set_io -nowarn LP_RGB_1[2] 46
+
+set_io -nowarn LP_ADDRESS_3[0] 43
+set_io -nowarn LP_ADDRESS_3[1] 38
+set_io -nowarn LP_ADDRESS_3[2] 34
+
+set_io -nowarn LP_ADDRESS_5[0] 43
+set_io -nowarn LP_ADDRESS_5[1] 38
+set_io -nowarn LP_ADDRESS_5[2] 34
+set_io -nowarn LP_ADDRESS_5[3] 31
+set_io -nowarn LP_ADDRESS_5[4] 28
