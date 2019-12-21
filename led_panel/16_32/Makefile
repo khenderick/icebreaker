@@ -1,7 +1,7 @@
 PROJ = led_panel
-ADD_SRC = ../_includes/clock_divider.v
+ADD_SRC = ../../_includes/clock_divider.v
 
-PIN_DEF = ../_includes/icebreaker.pcf
+PIN_DEF = ../../_includes/icebreaker.pcf
 DEVICE = up5k
 
 all: $(PROJ).rpt $(PROJ).bin
