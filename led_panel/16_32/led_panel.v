@@ -3,14 +3,15 @@
 // This files contains modules for playing around with the LED panel
 // It uses the LED pabel PMOD connected to PMOD 1A and 1B
 
-module top(CLOCK, BREAK_BUTTON_1, LP_CLOCK, LP_LATCH, LP_BLANK, LP_RGB_0, LP_RGB_1, LP_ADDRESS_3, BREAK_LEDS);
+module top(CLOCK, BREAK_BUTTON_1, BREAK_BUTTON_2, LP_CLOCK, LP_LATCH, LP_BLANK, LP_RGB_0, LP_RGB_1, LP_ADDRESS_3, BREAK_LEDS);
     // Press and hold the native button to activate. Releasing it will turn everything off
     // The native red and green leds will indicate the mode
 
-    parameter COLOR_DEPTH = 2;
+    parameter COLOR_DEPTH = 1;
 
     input CLOCK;
     input BREAK_BUTTON_1;
+    input BREAK_BUTTON_2;
     output LP_CLOCK;
     output LP_LATCH;
     output LP_BLANK;
@@ -19,35 +20,47 @@ module top(CLOCK, BREAK_BUTTON_1, LP_CLOCK, LP_LATCH, LP_BLANK, LP_RGB_0, LP_RGB
     output [2:0] LP_ADDRESS_3;
     output [4:0] BREAK_LEDS;
 
+    localparam RGB_WIDTH = COLOR_DEPTH * 3;
+    localparam S_START = 0,
+               S_LOAD = 1,
+               S_CLOCK1 = 2,
+               S_CLOCK2 = 3,
+               S_LATCH1 = 4,
+               S_LATCH2 = 5,
+               S_BLANK = 6,
+               S_UNBLANK = 7,
+               S_PWM = 8;
+
     wire slow_clock;
 
-    reg [3:0] state;
+    reg [3:0] state = S_START;
     reg [2:0] address;
+    reg [2:0] address_next;
     reg led_red;
     reg led_green;
     reg latch;
     reg panel_clock;
     reg blank;
-
-    reg [COLOR_DEPTH-1:0] r_0_value = 0;
-    reg [COLOR_DEPTH-1:0] g_0_value = 0;
-    reg [COLOR_DEPTH-1:0] b_0_value = 0;
-    reg [COLOR_DEPTH-1:0] r_1_value = 0;
-    reg [COLOR_DEPTH-1:0] g_1_value = 0;
-    reg [COLOR_DEPTH-1:0] b_1_value = 0;
     
     reg [COLOR_DEPTH-1:0] pwm_threshold;
 
     reg r_0, g_0, b_0;
     reg r_1, g_1, b_1;
 
-    reg [5:0] counter; // 5-bit counter, 0-31
+    reg [4:0] counter; // 4-bit counter, 0-31
+
+    // Framebuffer
+    // * 16 rows
+    // * 32 columns, each column is 3 colors of COLOR_DEPTH bits
+    reg [(32*RGB_WIDTH)-1:0] frame_buffer [15:0]; // 16 n-bit arrays
+
+    reg [3:0] row_pointer = 0;
 
     assign BREAK_LEDS[0] = led_red;
     assign BREAK_LEDS[1] = led_green;
     assign BREAK_LEDS[2] = latch;
-    assign BREAK_LEDS[3] = blank;
-    assign BREAK_LEDS[4] = slow_clock;
+    assign BREAK_LEDS[3] = 0;
+    assign BREAK_LEDS[4] = 0;
     assign LP_LATCH = latch;
     assign LP_BLANK = blank;
     assign LP_CLOCK = panel_clock;
@@ -56,23 +69,16 @@ module top(CLOCK, BREAK_BUTTON_1, LP_CLOCK, LP_LATCH, LP_BLANK, LP_RGB_0, LP_RGB
     assign LP_RGB_0 = {b_0, g_0, r_0};
     assign LP_RGB_1 = {b_1, g_1, r_1};
 
-    localparam S_START = 0,
-               S_LOAD = 1,
-               S_CLOCK1 = 2,
-               S_CLOCK2 = 3,
-               S_BLANK = 4, 
-               S_LATCH1 = 5,
-               S_LATCH2 = 6,
-               S_UNBLANK = 7,
-               S_PWM = 8;
-
-    always @(posedge slow_clock) begin
-        r_0_value <= r_0_value + 1;
-        g_1_value <= g_1_value + 1;
+    initial begin
+        frame_buffer[0] = {32{3'b111}};
+        for (row_pointer = 1; row_pointer < 15; row_pointer = row_pointer + 1) begin
+            frame_buffer[row_pointer] = {3'b111, {30{3'b000}}, 3'b111};
+        end
+        frame_buffer[15] = {32{3'b111}};
     end
 
-    always @(posedge CLOCK or negedge BREAK_BUTTON_1) begin
-        if (!BREAK_BUTTON_1) begin
+    always @(posedge CLOCK) begin
+        if (BREAK_BUTTON_1) begin
             // Inform that program is inactive
             led_green <= 0;
             led_red <= 1;
@@ -88,22 +94,23 @@ module top(CLOCK, BREAK_BUTTON_1, LP_CLOCK, LP_LATCH, LP_BLANK, LP_RGB_0, LP_RGB
             case (state)
                 S_START: begin
                     // Make sure all registers are set on sane start values
-                    blank <= 0;
+                    blank <= 1;
                     panel_clock <= 0;
                     latch <= 0;
                     counter <= 31;
                     address <= 0;
+                    address_next <= 0;
                     pwm_threshold <= 0;
                     state <= S_LOAD;
                 end
                 S_LOAD: begin
                     // Load the RGB values for both channels
-                    r_0 <= r_0_value > pwm_threshold;
-                    g_0 <= g_0_value > pwm_threshold;
-                    b_0 <= b_0_value > pwm_threshold;
-                    r_1 <= r_1_value > pwm_threshold;
-                    g_1 <= g_1_value > pwm_threshold;
-                    b_1 <= b_1_value > pwm_threshold;
+                    r_0 <= frame_buffer[address_next][(counter*RGB_WIDTH)+(COLOR_DEPTH*2)+(COLOR_DEPTH-1):(counter*RGB_WIDTH)+(COLOR_DEPTH*2)] > pwm_threshold;
+                    g_0 <= frame_buffer[address_next][(counter*RGB_WIDTH)+(COLOR_DEPTH*1)+(COLOR_DEPTH-1):(counter*RGB_WIDTH)+(COLOR_DEPTH*1)] > pwm_threshold;
+                    b_0 <= frame_buffer[address_next][(counter*RGB_WIDTH)+(COLOR_DEPTH*0)+(COLOR_DEPTH-1):(counter*RGB_WIDTH)+(COLOR_DEPTH*0)] > pwm_threshold;
+                    r_1 <= frame_buffer[address_next+8][(counter*RGB_WIDTH)+(COLOR_DEPTH*2)+(COLOR_DEPTH-1):(counter*RGB_WIDTH)+(COLOR_DEPTH*2)] > pwm_threshold;
+                    g_1 <= frame_buffer[address_next+8][(counter*RGB_WIDTH)+(COLOR_DEPTH*1)+(COLOR_DEPTH-1):(counter*RGB_WIDTH)+(COLOR_DEPTH*1)] > pwm_threshold;
+                    b_1 <= frame_buffer[address_next+8][(counter*RGB_WIDTH)+(COLOR_DEPTH*0)+(COLOR_DEPTH-1):(counter*RGB_WIDTH)+(COLOR_DEPTH*0)] > pwm_threshold;
                     state <= S_CLOCK1;
                 end
                 S_CLOCK1: begin
@@ -142,12 +149,13 @@ module top(CLOCK, BREAK_BUTTON_1, LP_CLOCK, LP_LATCH, LP_BLANK, LP_RGB_0, LP_RGB
                     // Display new data
                     blank <= 0;
                     // Prepare for loading new row on next address
-                    address <= address + 1;
+                    address <= address_next;
+                    address_next <= address_next + 1;
                     counter <= 31;
                     state <= S_PWM;
                 end
                 S_PWM: begin
-                    if (address == 0) begin
+                    if (address_next == 0) begin
                         // On every full cycle, we need to update the PWM threshold
                         if (COLOR_DEPTH > 1) begin
                             if (&pwm_threshold[COLOR_DEPTH-1:1] == 1 & pwm_threshold[0] == 0) begin
@@ -164,7 +172,7 @@ module top(CLOCK, BREAK_BUTTON_1, LP_CLOCK, LP_LATCH, LP_BLANK, LP_RGB_0, LP_RGB
     end
 
     clock_divider #(
-        .SCALE(21)
+        .SCALE(8)
     ) divider(
         .i_clock(CLOCK),
         .o_clock(slow_clock)
