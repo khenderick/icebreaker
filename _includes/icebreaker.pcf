@@ -134,12 +134,8 @@ set_io -nowarn LP_RGB_1[0]  3
 set_io -nowarn LP_RGB_1[1] 48
 set_io -nowarn LP_RGB_1[2] 46
 
-set_io -nowarn LP_ADDRESS_3[0] 43
-set_io -nowarn LP_ADDRESS_3[1] 38
-set_io -nowarn LP_ADDRESS_3[2] 34
-
-set_io -nowarn LP_ADDRESS_5[0] 43
-set_io -nowarn LP_ADDRESS_5[1] 38
-set_io -nowarn LP_ADDRESS_5[2] 34
-set_io -nowarn LP_ADDRESS_5[3] 31
-set_io -nowarn LP_ADDRESS_5[4] 28
+set_io -nowarn LP_ADDRESS[0] 43
+set_io -nowarn LP_ADDRESS[1] 38
+set_io -nowarn LP_ADDRESS[2] 34
+set_io -nowarn LP_ADDRESS[3] 31
+set_io -nowarn LP_ADDRESS[4] 28
