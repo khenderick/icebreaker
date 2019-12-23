@@ -94,15 +94,15 @@ module top(CLOCK, BREAK_BUTTON_1, BREAK_BUTTON_2, BREAK_BUTTON_3, LP_CLOCK, LP_L
     end
 
     always @(posedge clean_button_1) begin
-        g_frame_buffer[cursor_y] <= g_frame_buffer[cursor_y] | (1'b1 << cursor_x);
+        g_frame_buffer[cursor_y] <= g_frame_buffer[cursor_y] | ({COLOR_DEPTH{1'b1}} << (COLOR_DEPTH * cursor_x));
     end
 
     always @(negedge button_pressed) begin
         if (cursor_y != previous_cursor_y) begin
-            b_frame_buffer[cursor_y] <= b_frame_buffer[cursor_y] | (1'b1 << cursor_x);
-            b_frame_buffer[previous_cursor_y] <= b_frame_buffer[previous_cursor_y] & ~(1'b1 << previous_cursor_x);
+            b_frame_buffer[cursor_y] <= b_frame_buffer[cursor_y] | ({COLOR_DEPTH{1'b1}} << (COLOR_DEPTH * cursor_x));
+            b_frame_buffer[previous_cursor_y] <= b_frame_buffer[previous_cursor_y] & ~({COLOR_DEPTH{1'b1}} << (COLOR_DEPTH * previous_cursor_x));
         end else begin
-            b_frame_buffer[cursor_y] <= (b_frame_buffer[cursor_y] | (1'b1 << cursor_x)) & ~(1'b1 << previous_cursor_x);
+            b_frame_buffer[cursor_y] <= (b_frame_buffer[cursor_y] | ({COLOR_DEPTH{1'b1}} << (COLOR_DEPTH * cursor_x))) & ~({COLOR_DEPTH{1'b1}} << (COLOR_DEPTH * previous_cursor_x));
         end
     end
 
