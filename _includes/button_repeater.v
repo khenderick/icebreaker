@@ -9,7 +9,7 @@
 module button_repeater(i_clock, i_button, o_button);
     // Input and output button are held together, but when the input button is hold down, the output
     // button will start "repeating" at a given frequency
-    parameter REPEAT_WAIT = 6;
+    parameter REPEAT_WAIT = 7;
     parameter REPEAT_FREQ = 2;
 
     input i_clock;
