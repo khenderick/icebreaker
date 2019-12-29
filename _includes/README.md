@@ -94,7 +94,7 @@ module top(CLOCK, BUTTON, ...);
     ...
     wire clean_button;
     ...
-    button_debouncer debouncer_3(
+    button_debouncer debouncer(
         .i_clock(CLOCK),
         .i_button(BUTTON),
         .o_state(clean_button)
@@ -115,6 +115,52 @@ module top(CLOCK, BUTTON, ...);
         .i_clock(CLOCK),
         .i_button(BUTTON),
         .o_state(clean_button)
+    );
+    ...
+```
+
+### button_repeater.v
+
+This module outputs the state of an input button, but will emulate repeated pressed if the input button
+is hold down for a certain amount of time. It has a `REPEAT_WAIT` parameter that defaults to `6` to configure
+how hold the button needs to be held down before the repeating starts. It also has a `REPEAT_FREQ` parameter that
+defaults to `2` that configures how fast button presses are emulated.
+
+Parameters:
+
+* `i_clock`: Input, input clock
+* `i_button`: Input, input button
+* `o_button`: Output, virtual output button
+
+Usage:
+
+```
+module top(CLOCK, BUTTON, ...);
+    ...
+    wire output_button;
+    ...
+    button_repeater repeater(
+        .i_clock(CLOCK),
+        .i_button(BUTTON),
+        .o_button(output_button)
+    );
+    ...
+```
+
+With parameters:
+
+```
+module top(CLOCK, BUTTON, ...);
+    ...
+    wire clean_button;
+    ...
+    button_repeater #(
+        .REPEAT_WAIT(12),
+        .REPEAT_FREQ(4)
+    ) repeater(
+        .i_clock(CLOCK),
+        .i_button(BUTTON),
+        .o_button(output_button)
     );
     ...
 ```
