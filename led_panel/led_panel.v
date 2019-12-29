@@ -9,7 +9,7 @@
 // This files contains modules for playing around with the LED panel
 // It uses the LED pabel PMOD connected to PMOD 1A and 1B
 
-module top(CLOCK, BREAK_BUTTON_1, BREAK_BUTTON_2, BREAK_BUTTON_3, LP_CLOCK, LP_LATCH, LP_BLANK, LP_RGB_0, LP_RGB_1, LP_ADDRESS);
+module top(CLOCK, BREAK_BUTTON_1, BREAK_BUTTON_2, BREAK_BUTTON_3, LP_CLOCK, LP_LATCH, LP_BLANK, LP_RGB_0, LP_RGB_1, LP_ADDRESS, BREAK_L4, BREAK_L5);
     // Press and hold the native button to activate. Releasing it will turn everything off
     // The native red and green leds will indicate the mode
 
@@ -27,6 +27,8 @@ module top(CLOCK, BREAK_BUTTON_1, BREAK_BUTTON_2, BREAK_BUTTON_3, LP_CLOCK, LP_L
     output [2:0] LP_RGB_0;
     output [2:0] LP_RGB_1;
     output [4:0] LP_ADDRESS;
+    output BREAK_L4;
+    output BREAK_L5;
 
     localparam COL_BITS = `bits_for(COLS - 1);
     localparam ROW_BITS = `bits_for(ROWS - 1);
@@ -43,9 +45,8 @@ module top(CLOCK, BREAK_BUTTON_1, BREAK_BUTTON_2, BREAK_BUTTON_3, LP_CLOCK, LP_L
 
     wire slow_clock;
     wire clean_button_1;
-    wire clean_button_2;
-    wire clean_button_3;
-    wire button_state;
+    wire button_x;
+    wire button_y;
 
     reg [3:0] display_state = S_START;
     reg [ADDRESS_BITS - 1:0] address;
@@ -77,28 +78,19 @@ module top(CLOCK, BREAK_BUTTON_1, BREAK_BUTTON_2, BREAK_BUTTON_3, LP_CLOCK, LP_L
     assign LP_ADDRESS = address[ADDRESS_BITS-1:0];
     assign LP_RGB_0 = {b_0, g_0, r_0}; // Red and blue inverted
     assign LP_RGB_1 = {b_1, g_1, r_1}; // Red and blue inverted
-    assign button_state = clean_button_1 | clean_button_2 | clean_button_3;
+    assign BREAK_L4 = button_y;
+    assign BREAK_L5 = button_x;
 
     initial begin
         $readmemh("64x64x1.mem", frame_buffer);
     end
 
-    always @(posedge button_state) begin
-        if (clean_button_2) begin
-            cursor_y <= cursor_y + 1;
-        end
-        if (clean_button_3) begin
-            cursor_x <= cursor_x + 1;
-        end
-        if (clean_button_1) begin
-            //frame_buffer[cursor_y] <= draw_buffer | (3'b001 << (cursor_x * 3));
-        end
+    always @(posedge button_y) begin
+        cursor_y <= cursor_y + 1;
     end
 
-    always @(negedge button_state) begin
-        if (clean_button_1) begin
-            //draw_buffer <= frame_buffer[cursor_y];
-        end
+    always @(posedge button_x) begin
+        cursor_x <= cursor_x + 1;
     end
 
     always @(posedge CLOCK) begin  
@@ -123,11 +115,11 @@ module top(CLOCK, BREAK_BUTTON_1, BREAK_BUTTON_2, BREAK_BUTTON_3, LP_CLOCK, LP_L
             end
             S_LOAD: begin
                 // Load the RGB values for both channels
-                r_0 <= row_buffer_0[(col_pointer * COLOR_DEPTH * 3) + (COLOR_DEPTH * 3) - 1:(col_pointer * COLOR_DEPTH * 3) + (COLOR_DEPTH * 2)] > pwm_threshold || col_pointer == cursor_y;
-                g_0 <= row_buffer_0[(col_pointer * COLOR_DEPTH * 3) + (COLOR_DEPTH * 2) - 1:(col_pointer * COLOR_DEPTH * 3) + (COLOR_DEPTH * 1)] > pwm_threshold || address_next == cursor_x;
+                r_0 <= row_buffer_0[(col_pointer * COLOR_DEPTH * 3) + (COLOR_DEPTH * 3) - 1:(col_pointer * COLOR_DEPTH * 3) + (COLOR_DEPTH * 2)] > pwm_threshold || col_pointer == cursor_x;
+                g_0 <= row_buffer_0[(col_pointer * COLOR_DEPTH * 3) + (COLOR_DEPTH * 2) - 1:(col_pointer * COLOR_DEPTH * 3) + (COLOR_DEPTH * 1)] > pwm_threshold || address_next == cursor_y;
                 b_0 <= row_buffer_0[(col_pointer * COLOR_DEPTH * 3) + (COLOR_DEPTH * 1) - 1:(col_pointer * COLOR_DEPTH * 3) + (COLOR_DEPTH * 0)] > pwm_threshold;
-                r_1 <= row_buffer_1[(col_pointer * COLOR_DEPTH * 3) + (COLOR_DEPTH * 3) - 1:(col_pointer * COLOR_DEPTH * 3) + (COLOR_DEPTH * 2)] > pwm_threshold || col_pointer == cursor_y;
-                g_1 <= row_buffer_1[(col_pointer * COLOR_DEPTH * 3) + (COLOR_DEPTH * 2) - 1:(col_pointer * COLOR_DEPTH * 3) + (COLOR_DEPTH * 1)] > pwm_threshold || address_next + (ROWS / 2) == cursor_x;
+                r_1 <= row_buffer_1[(col_pointer * COLOR_DEPTH * 3) + (COLOR_DEPTH * 3) - 1:(col_pointer * COLOR_DEPTH * 3) + (COLOR_DEPTH * 2)] > pwm_threshold || col_pointer == cursor_x;
+                g_1 <= row_buffer_1[(col_pointer * COLOR_DEPTH * 3) + (COLOR_DEPTH * 2) - 1:(col_pointer * COLOR_DEPTH * 3) + (COLOR_DEPTH * 1)] > pwm_threshold || address_next + (ROWS / 2) == cursor_y;
                 b_1 <= row_buffer_1[(col_pointer * COLOR_DEPTH * 3) + (COLOR_DEPTH * 1) - 1:(col_pointer * COLOR_DEPTH * 3) + (COLOR_DEPTH * 0)] > pwm_threshold;
                 display_state <= S_CLOCK1;
             end
@@ -202,15 +194,15 @@ module top(CLOCK, BREAK_BUTTON_1, BREAK_BUTTON_2, BREAK_BUTTON_3, LP_CLOCK, LP_L
         .o_state(clean_button_1)
     );
 
-    button_debouncer debouncer_2(
+    button_repeater repeater_y(
         .i_clock(CLOCK),
         .i_button(BREAK_BUTTON_2),
-        .o_state(clean_button_2)
+        .o_button(button_y)
     );
 
-    button_debouncer debouncer_3(
+    button_repeater repeater_x(
         .i_clock(CLOCK),
         .i_button(BREAK_BUTTON_3),
-        .o_state(clean_button_3)
+        .o_button(button_x)
     );
 endmodule
